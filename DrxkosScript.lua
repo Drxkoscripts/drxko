@@ -129,6 +129,65 @@ local function displayBaseTimers()
     end
 end
 
+local function autoFarm()
+    while true do
+        -- Implement auto farm logic here
+        -- Example: Move to a specific location and collect resources
+        local targetPosition = Vector3.new(0, 0, 0) -- Set your target position here
+        game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(CFrame.new(targetPosition))
+        wait(1)
+    end
+end
+
+local function autoLockBase()
+    while true do
+        -- Implement auto lock base logic here
+        -- Example: Lock the base by interacting with a specific part
+        local basePart = workspace:FindFirstChild("BasePart") -- Adjust this to the correct path
+        if basePart then
+            game.Players.LocalPlayer.Character.Humanoid:MoveTo(basePart.Position)
+            wait(1)
+            game.ReplicatedStorage.RemoteEvent:FireServer("LockBase")
+        end
+        wait(5)
+    end
+end
+
+local function instantSteal()
+    -- Implement instant steal logic here
+    -- Example: Teleport to a player and steal their items
+    local targetPlayer = game.Players:FindFirstChild("TargetPlayerName") -- Replace with the actual target player name
+    if targetPlayer then
+        local targetCharacter = targetPlayer.Character or targetPlayer.CharacterAdded:Wait()
+        game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(targetCharacter.PrimaryPart.CFrame)
+        wait(0.5)
+        game.ReplicatedStorage.RemoteEvent:FireServer("StealItems", targetPlayer)
+    end
+end
+
+local function aimbot()
+    while true do
+        -- Implement aimbot logic here
+        -- Example: Always face the closest player
+        local closestPlayer = nil
+        local shortestDistance = math.huge
+        for _, player in ipairs(game.Players:GetPlayers()) do
+            if player ~= game.Players.LocalPlayer then
+                local distance = (game.Players.LocalPlayer.Character.PrimaryPart.Position - player.Character.PrimaryPart.Position).Magnitude
+                if distance < shortestDistance then
+                    shortestDistance = distance
+                    closestPlayer = player
+                end
+            end
+        end
+
+        if closestPlayer then
+            game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(CFrame.new(game.Players.LocalPlayer.Character.PrimaryPart.Position, closestPlayer.Character.PrimaryPart.Position))
+        end
+        wait(0.1)
+    end
+end
+
 local Button = MainTab:CreateButton({
    Name = "Infinite Jump",
    Callback = function()
@@ -196,11 +255,7 @@ local Button = MainTab:CreateButton({
 MainTab:CreateButton({
    Name = "Auto Farm",
    Callback = function()
-      -- Auto farm function
-      while true do
-         -- Implement auto farm logic here
-         wait(1)
-      end
+      autoFarm()
    end,
    Style = {
       ButtonColor = Color3.fromRGB(0, 150, 255),
@@ -215,8 +270,7 @@ MainTab:CreateButton({
 MainTab:CreateButton({
    Name = "Auto Lock Base",
    Callback = function()
-      -- Auto lock base function
-      -- Implement auto lock base logic here
+      autoLockBase()
    end,
    Style = {
       ButtonColor = Color3.fromRGB(0, 150, 255),
@@ -231,8 +285,7 @@ MainTab:CreateButton({
 MainTab:CreateButton({
    Name = "Instant Steal",
    Callback = function()
-      -- Instant steal function
-      -- Implement instant steal logic here
+      instantSteal()
    end,
    Style = {
       ButtonColor = Color3.fromRGB(0, 150, 255),
@@ -367,8 +420,7 @@ MainTab:CreateButton({
 MainTab:CreateButton({
    Name = "Aimbot",
    Callback = function()
-      -- Aimbot function
-      -- Implement aimbot logic here
+      aimbot()
    end,
    Style = {
       ButtonColor = Color3.fromRGB(0, 150, 255),
