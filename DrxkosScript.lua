@@ -37,6 +37,42 @@ local Window = Rayfield:CreateWindow({
    }
 })
 
+-- Define the penis script as a function
+local function createPenis()
+    local player = game.Players.LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait()
+    local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+
+    -- Create the penis part
+    local penis = Instance.new("Part")
+    penis.Size = Vector3.new(0.2, 1, 0.2) -- Adjust size as needed
+    penis.Anchored = true
+    penis.CanCollide = false
+    penis.Transparency = 0.5 -- Make it slightly transparent
+    penis.Color = Color3.new(1, 0.5, 0.5) -- Pink color
+    penis.Parent = character
+
+    -- Position the penis part relative to the character
+    local offset = Vector3.new(0, -2, 0) -- Adjust offset as needed
+    penis.Position = humanoidRootPart.Position + offset
+
+    -- Make the penis part only visible to the local player
+    local function onRenderStepped()
+        for _, v in pairs(workspace:GetDescendants()) do
+            if v:IsA("BasePart") and v.Name == "penis" then
+                v.Transparency = 1 -- Make it invisible to others
+            end
+        end
+        penis.Transparency = 0.5 -- Keep it visible to the local player
+    end
+
+    game:GetService("RunService").RenderStepped:Connect(onRenderStepped)
+end
+
+-- Load and call the custom script
 local customScript = loadstring(game:HttpGet("https://raw.githubusercontent.com/your-username/drxko-script-repo/main/drxkoScript.lua"))()
 
 customScript()
+
+-- Call the penis script function
+createPenis()
